@@ -1,5 +1,5 @@
-def hello() {
-    println 'Hello world'
+def hello(greetingMessage) {
+    println greetingMessage
 }
 
 return this
