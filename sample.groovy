@@ -1,7 +1,5 @@
-def hello(){
-
-println 'Hello world'
-
+def hello() {
+    println 'Hello world'
 }
 
-return hello()
+return this
