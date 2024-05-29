@@ -1,7 +1,7 @@
 import groovy.json.JsonSlurper
 import groovy.json.*
 
-def sample() {
+def call() {
     
     println "Hello world"
 }
