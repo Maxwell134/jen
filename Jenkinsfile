@@ -12,7 +12,7 @@ pipeline {
                     // // Parse the JSON content
                     // def parserJson = new JsonSlurperClassic().parseText(inputFile)
                     // // Load the external Groovy script
-                    ls -lrth 
+                    sh 'ls -lrth'
                     def groovyScript = load 'jen/sample.groovy'
                     
                     // Call the sample function from the loaded script with parsed JSON
