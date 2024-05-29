@@ -24,15 +24,20 @@ pipeline {
             }
         }
 
-    stage('Install K3s') {
-            steps {
-                script {
-                    // Read the JSON file
-                   sh 'curl -sfL https://get.k3s.io | sh - 
-                // Check for Ready node, takes ~30 seconds 
-                    sudo k3s kubectl get node 
-                }
-            }
+        stage('Install K3s') {
+        steps {
+            // Install K3s
+            sh '''
+                curl -sfL https://get.k3s.io | sh -
+            '''
+    
+            // Wait for node to be ready
+            script {
+                echo "Waiting for K3s node to be ready..."
+                sleep 30 // Wait for approximately 30 seconds (adjust as needed)
+                sh 'sudo k3s kubectl get node'
         }
+    }
+}
     }
 }
