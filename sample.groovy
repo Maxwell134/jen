@@ -1,7 +1,7 @@
-import groovy.json.JsonSlurper
+def hello(){
 
-def sample(jsonObject) {
-    println "Hello ${jsonObject.message}"
+println 'Hello world'
+
 }
 
-return this 
+return hello()
