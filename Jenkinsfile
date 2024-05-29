@@ -16,7 +16,7 @@ pipeline {
                     groovyScript = load 'call.groovy'
                     
                     // Call the sample function from the loaded script with parsed JSON
-                    groovyScript.sample()
+                    groovyScript.call()
                 }
             }
         }
