@@ -1,38 +1,30 @@
-@Library('builder') _
-
+import groovy.json.JsonSlurperClassic 
 pipeline {
     agent any
 
-    environment {
-        IMAGE_NAME = 'myapp'
-        IMAGE_TAG = 'latest'
-        DOCKER_USERNAME = '7002370412'
-       
-    }
-
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Build Docker Image') {
+        stage('Intialization') {
             steps {
                 script {
-                    buildDockerImage(IMAGE_NAME, IMAGE_TAG)
+                    // Import the required class
+                    inputFile = readFile("${env.WORKSPACE}/pipeline.json")
+                    parserJson = new JsonSlurperClassic().parseText(inputFile)
+                    println "Reading Json"
+                
                 }
             }
         }
-
-        stage('Push Docker Image') {
+    
+    stage('Demo') {
             steps {
                 script {
-                    pushDockerImage(DOCKER_USERNAME, IMAGE_NAME, IMAGE_TAG)
+                    // Import the required class
+                    stageName = "applying sample"
+                         
                 }
+                sample(parserJson)
             }
-        }
-
-       
+        }  
+    
     }
 }
