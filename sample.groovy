@@ -3,7 +3,7 @@ def hello(image, tag, port) {
     def output = sh(script: container, returnStdout: true).trim()
     
     if (output) {
-        sh "docker rm -f $(docker ps -qa)"
+        sh "docker rm -f \$(docker ps -qa)"  // Escaping the dollar sign
     }
     
     sh "docker run -d -p ${port}:80 ${image}:${tag}"
