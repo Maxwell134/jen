@@ -10,13 +10,16 @@ pipeline {
                     def jsonContent = readJSON text: jsonFile
                     
                     // Extract the variable from JSON
-                    def greetingMessage = jsonContent.greeting
+                    def image = jsonContent.dockerConfig.image
+                    def tag = jsonContent.dockerConfig.tag
+                    def port = jsonContent.dockerConfig.port
+                    
                     
                     // Load the Groovy script
                     def sample = load 'sample.groovy'
                     
                     // Call the hello method with the greeting message
-                    sample.hello(greetingMessage)
+                    sample.hello(image, tag, port)
                 }
             }
         }
