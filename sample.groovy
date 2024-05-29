@@ -1,11 +1,19 @@
 def hello(image, tag, port) {
-    def container = 'docker ps -a'
-    def output = sh(script: container, returnStdout: true).trim()
+    // Get the list of container IDs
+    def containers = sh(script: 'docker ps -qa', returnStdout: true).trim()
     
-    if (output) {
-        sh "docker rm -f \$(docker ps -qa)"  // Escaping the dollar sign
+    // Check if there are any containers to remove
+    if (containers) {
+        // Split the container IDs into a list
+        def containerIds = containers.tokenize()
+        
+        // Remove each container
+        containerIds.each { id ->
+            sh "docker rm -f ${id}"
+        }
     }
     
+    // Run a new container
     sh "docker run -d -p ${port}:80 ${image}:${tag}"
 }
 
