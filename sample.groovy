@@ -1,5 +1,6 @@
 def hello(image, tag, port) {
     // Get the list of container IDs
+    sh "docker images" 
     def containers = sh(script: 'docker ps -qa', returnStdout: true).trim()
     
     // Check if there are any containers to remove
