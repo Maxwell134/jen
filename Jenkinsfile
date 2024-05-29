@@ -12,8 +12,11 @@ pipeline {
                     // Extract the variable from JSON
                     def greetingMessage = jsonContent.greeting
                     
-                    // Print the greeting message
-                    echo greetingMessage
+                    // Load the Groovy script
+                    def sample = load 'sample.groovy'
+                    
+                    // Call the hello method with the greeting message
+                    sample.hello(greetingMessage)
                 }
             }
         }
