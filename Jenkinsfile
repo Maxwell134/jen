@@ -20,8 +20,9 @@ pipeline {
                 script {
                     // Import the required class
                     stageName = "applying sample"
-                    new = load 'sample.groovy'
-                    sh 'new.sample(world)'
+                    def groovyScript = load 'sample.groovy'
+                    // Call the sample function from the loaded script with parsed JSON
+                    groovyScript.sample(world)     
                          
                 }
                 // sample(parserJson)
