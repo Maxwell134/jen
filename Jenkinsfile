@@ -2,14 +2,18 @@ pipeline {
     agent any
 
     stages {
-        stage('Run Groovy Script') {
+        stage('Read JSON') {
             steps {
                 script {
-                    // Load the Groovy script
-                    def groovyScript = load 'sample.groovy'
+                    // Read the JSON file
+                    def jsonFile = readFile 'pipeline.json'
+                    def jsonContent = readJSON text: jsonFile
                     
-                    // Call the hello method
-                    groovyScript.hello()
+                    // Extract the variable from JSON
+                    def greetingMessage = jsonContent.greeting
+                    
+                    // Print the greeting message
+                    echo greetingMessage
                 }
             }
         }
