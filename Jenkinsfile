@@ -2,12 +2,13 @@ pipeline {
     agent any
 
     stages {
-        stage('Initialization') {
+        stage('Run Groovy Script') {
             steps {
                 script {
-                    // Read the pipeline.json file from the workspace
-                   
+                    // Load the Groovy script
                     def groovyScript = load 'sample.groovy'
+                    
+                    // Call the hello method
                     groovyScript.hello()
                 }
             }
