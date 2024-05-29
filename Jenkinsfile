@@ -1,33 +1,22 @@
-import groovy.json.JsonSlurperClassic 
+import groovy.json.JsonSlurperClassic
+
 pipeline {
     agent any
 
     stages {
-        // stage('Intialization') {
-        //     steps {
-        //         script {
-        //             // Import the required class
-        //             inputFile = readFile("${env.WORKSPACE}/pipeline.json")
-        //             parserJson = new JsonSlurperClassic().parseText(inputFile)
-        //             println "Reading Json"
-                
-        //         }
-        //     }
-        // }
-    
-    stage('Demo') {
+        stage('Initialization') {
             steps {
                 script {
-                    // Import the required class
-                    stageName = "applying sample"
+                    // Read the JSON file from the workspace
+                    def inputFile = readFile(file: 'pipeline.json')
+                    // Parse the JSON content
+                    def parserJson = new JsonSlurperClassic().parseText(inputFile)
+                    // Load the external Groovy script
                     def groovyScript = load 'sample.groovy'
                     // Call the sample function from the loaded script with parsed JSON
-                    groovyScript.sample(world)     
-                         
+                    groovyScript.sample(parserJson)
                 }
-                // sample(parserJson)
             }
-        }  
-    
+        }
     }
 }
