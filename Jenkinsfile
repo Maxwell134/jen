@@ -1,5 +1,3 @@
-// import groovy.json.JsonSlurperClassic
-
 pipeline {
     agent any
 
@@ -7,16 +5,13 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
-                    // Read the JSON file from the workspace
-                    // def inputFile = readFile(file: 'pipeline.json')
-                    // // Parse the JSON content
-                    // def parserJson = new JsonSlurperClassic().parseText(inputFile)
-                    // // Load the external Groovy script
-                    sh 'ls -lrth'
-                    groovyScript = load 'call.groovy'
-                    
-                    // Call the sample function from the loaded script with parsed JSON
-                    groovyScript.call()
+                    // Read the pipeline.json file from the workspace
+                    def jsonFile = readFile 'pipeline.json'
+                    // Parse the JSON content
+                    def jsonParser = new groovy.json.JsonSlurper().parseText(jsonFile)
+                    // Load and call the sample.groovy script
+                    def groovyScript = load 'sample.groovy'
+                    groovyScript.sample(jsonParser)
                 }
             }
         }
