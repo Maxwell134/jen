@@ -31,23 +31,32 @@ pipeline {
     agent any
 
     stages {
-        stage('Check Changes') {
+        stage('Check Last Commit') {
             steps {
                 script {
-                    def fileName = 'mintu.txt' // Replace 'mintu.txt' with the actual file name
-
-                    // Get the last modification time of the file
-                    def lastModifiedTime = sh(script: "stat -c %Y ${fileName}", returnStdout: true).trim().toLong()
-
-                    // Get the current timestamp
-                    def currentTimestamp = sh(script: 'date "+%s"', returnStdout: true).trim().toLong()
-
-                    if (lastModifiedTime == currentTimestamp) {
-                        echo "Changes for file ${fileName} exist at the current timestamp. Skipping build stage."
-                        currentBuild.result = 'SUCCESS'
-                        return
+                    // Get the last commit information
+                    def lastCommitInfo = sh(script: "git log -1 --pretty=format:'%h %s'", returnStdout: true).trim()
+                    echo "Last commit: ${lastCommitInfo}"
+                    
+                    // Get the list of files changed in the last commit
+                    def changedFiles = sh(script: "git diff-tree --no-commit-id --name-only -r HEAD", returnStdout: true).trim().split("\n")
+                    changedFiles = changedFiles.findAll { it } // Remove any empty strings
+                    
+                    // Log the changed files
+                    echo "Files changed in the last commit: ${changedFiles}"
+                    
+                    // Check the number of files changed in the last commit
+                    if (changedFiles.size() == 1) {
+                        // If exactly one file is changed, check if it is mintu.txt
+                        if (changedFiles.contains('mintu.txt')) {
+                            echo "Recent changes made in mintu.txt. Skipping Maven build stage."
+                            currentBuild.result = 'SUCCESS'
+                            return
+                        } else {
+                            echo "Recent changes found but not in mintu.txt. Proceeding with Maven build stage."
+                        }
                     } else {
-                        echo "No changes found for file ${fileName} at the current timestamp. Proceeding with build stage."
+                        echo "No recent changes or multiple changes found. Proceeding with Maven build stage."
                     }
                 }
             }
@@ -58,14 +67,9 @@ pipeline {
                 expression { currentBuild.result != 'SUCCESS' }
             }
             steps {
-                script {
-                    echo 'Building the project...'
-                    // Example build steps:
-                    // Compile the code
-                    sh 'make compile'
-                    // Run additional build scripts or commands as needed
-                    sh 'make build'
-                }
+                echo 'Building the project with Maven..123.'
+                // Example Maven build steps
+                
             }
         }
 
@@ -75,9 +79,7 @@ pipeline {
                 // Add your test steps here
                 // Example test steps:
                 // Run unit tests
-                sh 'make test'
-                // Run integration tests
-                sh 'make integration-test'
+                
             }
         }
 
@@ -90,9 +92,7 @@ pipeline {
                 // Add your deployment steps here
                 // Example deployment steps:
                 // Deploy to staging environment
-                sh 'make deploy-staging'
-                // Deploy to production environment
-                sh 'make deploy-production'
+               
             }
         }
     }
