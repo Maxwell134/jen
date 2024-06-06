@@ -31,18 +31,23 @@ pipeline {
     agent any
 
     stages {
-        stage('Check Commit') {
+        stage('Check Changes') {
             steps {
                 script {
-                    def fileName = 'mintu.txt' // Replace 'your-file-name.ext' with the actual file name
-                    def commitExists = sh(script: "git log --oneline -- ${fileName}", returnStatus: true) == 0
+                    def fileName = 'mintu.txt' // Replace 'mintu.txt' with the actual file name
 
-                    if (commitExists) {
-                        echo "A commit for file ${fileName} exists in the repository. Skipping build stage."
+                    // Get the last modification time of the file
+                    def lastModifiedTime = sh(script: "stat -c %Y ${fileName}", returnStdout: true).trim().toLong()
+
+                    // Get the current timestamp
+                    def currentTimestamp = sh(script: 'date "+%s"', returnStdout: true).trim().toLong()
+
+                    if (lastModifiedTime == currentTimestamp) {
+                        echo "Changes for file ${fileName} exist at the current timestamp. Skipping build stage."
                         currentBuild.result = 'SUCCESS'
                         return
                     } else {
-                        echo "No commit found for file ${fileName} in the repository. Proceeding with build stage."
+                        echo "No changes found for file ${fileName} at the current timestamp. Proceeding with build stage."
                     }
                 }
             }
@@ -53,16 +58,26 @@ pipeline {
                 expression { currentBuild.result != 'SUCCESS' }
             }
             steps {
-                echo 'Building the project...'
-                // Add your build steps here
+                script {
+                    echo 'Building the project...'
+                    // Example build steps:
+                    // Compile the code
+                    sh 'make compile'
+                    // Run additional build scripts or commands as needed
+                    sh 'make build'
+                }
             }
         }
 
         stage('Test') {
-            
             steps {
                 echo 'Running tests...'
                 // Add your test steps here
+                // Example test steps:
+                // Run unit tests
+                sh 'make test'
+                // Run integration tests
+                sh 'make integration-test'
             }
         }
 
@@ -73,12 +88,15 @@ pipeline {
             steps {
                 echo 'Deploying the project...'
                 // Add your deployment steps here
+                // Example deployment steps:
+                // Deploy to staging environment
+                sh 'make deploy-staging'
+                // Deploy to production environment
+                sh 'make deploy-production'
             }
         }
     }
 }
-
-
 
 
 
