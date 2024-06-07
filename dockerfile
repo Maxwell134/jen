@@ -4,7 +4,7 @@ FROM jenkins/jenkins:lts
 # Switch to the root user to install packages
 USER root
 
-# Install Docker
+# Install Docker and other necessary dependencies
 RUN apt-get update && apt-get install -y \
     apt-transport-https \
     ca-certificates \
