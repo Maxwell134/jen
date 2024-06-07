@@ -76,6 +76,10 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running tests...'
+              script {
+
+                sh 'python3 main.py'
+              }
                 // Add your test steps here
                 // Example test steps:
                 // Run unit tests
